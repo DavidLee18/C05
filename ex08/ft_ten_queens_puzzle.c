@@ -44,13 +44,59 @@ int	min_conflicts_pos(int queens[10], int col)
 	int	c;
 	int	r;
 
-	i = 0;
+	i = 1;
 	r = 0;
+	queens[col] = 0;
+	c = get_conflicts(queens);
 	while (i < 10)
 	{
+		queens[col] = i;
+		if (get_conflicts(queens) < c)
+		{
+			c = get_conflicts(queens);
+			r = i;
+		}
 		i++;
 	}
 	return (r);
 }
 
-int	ft_ten_queens_puzzle(void);
+int	solve(int queens[10], int init)
+{
+	int		i;
+	char	out;
+
+	if (init == 10)
+		return (0);
+	queens[0] = init;
+	i = 0;
+	while (++i < 10)
+		queens[i] = min_conflicts_pos(queens, i);
+	if (get_conflicts(queens) == 0)
+	{
+		i = 0;
+		while (i < 10)
+		{
+			out = queens[i] + '0';
+			write(STDOUT_FILENO, &out, 1);
+			i++;
+		}
+		write(STDOUT_FILENO, "\n", 1);
+		return (1 + solve(queens, init + 1));
+	}
+	return (solve(queens, init + 1));
+}
+
+int	ft_ten_queens_puzzle(void)
+{
+	int		queens[10];
+	int		i;
+	int		r;
+
+	r = 0;
+	i = 0;
+	while (i < 10)
+		queens[i++] = -11;
+	i = 0;
+	return (solve(queens, 0));
+}
